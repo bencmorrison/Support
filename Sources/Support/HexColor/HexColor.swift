@@ -1,8 +1,6 @@
 // Copyright © 2023 Ben Morrison. All rights reserved.
 
 import Foundation
-import PowerAssert
-
 
 /// Provides a structure to define a Hexademimal color via it's R, G, and B channels
 public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
@@ -53,7 +51,7 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Parameter stringHexColor: The `String` represenation of the hexadecimal color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
     public static func rgbValues(from stringHexColor: String) throws -> (UInt8, UInt8, UInt8) {
-        #assert(stringHexColor.contains(.hexColor), "Expected Format: #RRGGBB")
+        assert(stringHexColor.contains(.hexColor), "Expected Format: #RRGGBB")
         
         let hexColorString = String(stringHexColor.dropFirst())
         let scanner = Scanner(string: hexColorString)
@@ -69,7 +67,7 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Parameter stringHexColor: The `UInt64` represenation of the hex color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
     public static func rgbValues(from hexValue: UInt64) throws -> (UInt8, UInt8, UInt8) {
-        #assert(hexValue < 0xFFFFFF, "hexValue should be <= 0xFFFFFF")
+        assert(hexValue < 0xFFFFFF, "hexValue should be <= 0xFFFFFF")
         
         let red = UInt8((0xFF0000 & hexValue) >> 16)
         let green = UInt8((0x00FF00 & hexValue) >> 8)
