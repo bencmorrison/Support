@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "swift-power-assert",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/swift-power-assert.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "bb2f1e6653e38503f4c1786715a9a4797ac2feea"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "6ff0671bea8ff207d21d8db662292ca802854d5d"
+      }
+    }
+  ],
+  "version" : 2
+}
