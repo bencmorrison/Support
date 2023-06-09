@@ -7,7 +7,7 @@ extension Collection where Element: Identifiable {
     ///
     /// - Parameter identifiable: The Element in the Collection you are looking for
     /// - Returns: The index of the Element in the Collection, or Nil if not found.
-    func index(matching identifiable: Element) -> Self.Index? {
+    public func index(matching identifiable: Element) -> Self.Index? {
         return firstIndex { $0.id == identifiable.id }
     }
 }
@@ -16,7 +16,8 @@ extension RangeReplaceableCollection where Element: Identifiable {
     /// Removes the specified element from the collection, if it found in the collection
     ///
     /// - Parameter element: The Element in which you wish to remove
-    mutating func remove(_ element: Element) {
+    mutating
+    public func remove(_ element: Element) {
         guard let index = index(matching: element) else { return }
         remove(at: index)
     }
@@ -29,7 +30,8 @@ extension RangeReplaceableCollection where Element: Identifiable {
     /// - Returns: Discardable `false` if the update didn't happen (not found), `true` if the update
     /// did happen
     @discardableResult
-    mutating func update(_ element: Element) -> Bool {
+    mutating
+    public func update(_ element: Element) -> Bool {
         guard let index = index(matching: element) else { return false }
         replaceSubrange(index...index, with: [element])
         return true

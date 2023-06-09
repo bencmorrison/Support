@@ -8,7 +8,7 @@ extension Color {
     /// - Note: Expects `#` to be prepended to the string
     /// - Throws: an error when the format is not `#RRGGBB`
     /// - Parameter hexString: The Hexadecimal Color to use.
-    init(hexString: String) throws {
+    public init(hexString: String) throws {
         let hex = try HexColor(stringHexColor: hexString)
         self = hex.color
     }
@@ -17,14 +17,14 @@ extension Color {
     /// a Hexadecimal color.
     /// - Throws: an error when the `hex` parameter is not equal to or below `0xFFFFFF`
     /// - Parameter hex: The Hexadecimal Color value to use.
-    init(hex: UInt32) throws {
+    public init(hex: UInt32) throws {
         let hex = try HexColor(hexValue: hex)
         self = hex.color
     }
     
     /// Allows the creation of a `Color` from the `HexColor` structure.
     /// - Parameter hexColor: The `HexColor` that defines your Hexadecimal color
-    init(_ hexColor: HexColor) {
+    public init(_ hexColor: HexColor) {
         self = hexColor.color
     }
     
@@ -35,7 +35,7 @@ extension Color {
     ///   - green: The value for the green channel
     ///   - blue: The value for the blue channel
     ///   - opacity: The opacity value.
-    init(red: UInt8, green: UInt8, blue: UInt8, opacity: CGFloat = 1.0) {
+    public init(red: UInt8, green: UInt8, blue: UInt8, opacity: CGFloat = 1.0) {
         self.init(
             red: CGFloat(red) / 255.0,
             green: CGFloat(green) / 255.0,
@@ -47,5 +47,5 @@ extension Color {
 
 extension HexColor {
     /// Returns a new instance of a `Color` that is defined by the `HexColor` struture.
-    var color: Color { Color(red: red, green: green, blue: blue) }
+    public var color: Color { Color(red: red, green: green, blue: blue) }
 }

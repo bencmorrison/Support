@@ -9,7 +9,7 @@ public enum Radix {
     case octal
     case hexadecimal
     
-    fileprivate var prefix: String {
+    public var prefix: String {
         switch self {
         case .binary:
             return "0b"
@@ -52,7 +52,7 @@ public enum FormattingPrefix {
     /// Use the provided custom prefix in the final product.
     case custom(String)
     
-    fileprivate func getPrefix(for radix: Radix) -> String {
+    public func getPrefix(for radix: Radix) -> String {
         switch self {
         case .none:
             return ""

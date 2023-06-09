@@ -5,31 +5,42 @@ import PowerAssert
 
 
 /// Provides a structure to define a Hexademimal color via it's R, G, and B channels
-struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
+public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// The value for the red channel
-    let red: UInt8
+    public let red: UInt8
     /// The value for the green channel
-    let green: UInt8
+    public let green: UInt8
     /// The value for the blue channel
-    let blue: UInt8
+    public let blue: UInt8
     
-    /// Allow the creation of a `HexColor` from a `String` representation of
+    /// Creates `HexColor` from the values for the r, g, and b channels directly.
+    /// - Parameters:
+    ///   - red: The red channel value
+    ///   - green: The green channel value
+    ///   - blue: The blue channel value
+    public init(red: UInt8, green: UInt8, blue: UInt8) {
+        self.red = red
+        self.green = green
+        self.blue = blue
+    }
+    
+    /// Creates a `HexColor` from a `String` representation of
     /// a Hexadecimal Color.
     /// - Note: This expects `#` to be pre-pended to the value.
     /// - Throws: an error when the format is not `#RRGGBB`
     /// - Parameter stringHexColor: The `String` representation of the hex color
-    init(stringHexColor: String) throws {
+    public init(stringHexColor: String) throws {
         let values = try Self.rgbValues(from: stringHexColor)
         red = values.0
         green = values.1
         blue = values.2
     }
     
-    /// Allow the creation of a `HexColor` from a `UInt32` representation of
+    /// Creates a `HexColor` from a `UInt32` representation of
     /// a Hexadecimal Color.
     /// - Throws: an error when the `hex` parameter is not equal to or below `0xFFFFFF`
     /// - Parameter hexValue: The `UInt32` representation of the hex color.
-    init(hexValue: UInt32) throws {
+    public init(hexValue: UInt32) throws {
         let values = try Self.rgbValues(from: UInt64(hexValue))
         red = values.0
         green = values.1
@@ -41,7 +52,7 @@ struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Throws: an error when the format is not `#RRGGBB`
     /// - Parameter stringHexColor: The `String` represenation of the hexadecimal color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
-    static func rgbValues(from stringHexColor: String) throws -> (UInt8, UInt8, UInt8) {
+    public static func rgbValues(from stringHexColor: String) throws -> (UInt8, UInt8, UInt8) {
         #assert(stringHexColor.contains(.hexColor), "Expected Format: #RRGGBB")
         
         let hexColorString = String(stringHexColor.dropFirst())
@@ -57,7 +68,7 @@ struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Throws: an error when the `hex` parameter is not equal to or below `0xFFFFFF`
     /// - Parameter stringHexColor: The `UInt64` represenation of the hex color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
-    static func rgbValues(from hexValue: UInt64) throws -> (UInt8, UInt8, UInt8) {
+    public static func rgbValues(from hexValue: UInt64) throws -> (UInt8, UInt8, UInt8) {
         #assert(hexValue < 0xFFFFFF, "hexValue should be <= 0xFFFFFF")
         
         let red = UInt8((0xFF0000 & hexValue) >> 16)
@@ -69,11 +80,11 @@ struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     
     // MARK: - CustomStringConvertible, CustomDebugStringConvertible
     private var combinedValue: UInt32 { UInt32(self) }
-    var description: String {
+    public var description: String {
         String(combinedValue, radix: .hexadecimal, prefix: .custom("#"))
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         return """
         red: \(String(red, radix: .hexadecimal, showLeadingZeros: false)), green: \(String(green, radix: .hexadecimal, showLeadingZeros: false)), blue: \(String(blue, radix: .hexadecimal, showLeadingZeros: false)))
         combined: \(description))

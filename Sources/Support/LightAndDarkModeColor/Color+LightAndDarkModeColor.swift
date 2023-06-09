@@ -16,7 +16,7 @@ extension Color {
     /// - Parameters:
     ///   - lightMode: The color to use when the `userInterfaceStyle` is `light`  or unknown
     ///   - darkMode: The color to use when the `userInterfaceStyle` is `dark`
-    init(lightMode: Color, darkMode: Color) {
+    public init(lightMode: Color, darkMode: Color) {
         #if canImport(AppKit)
         self.init(NSColor(lightMode: lightMode, darkMode: darkMode))
         #else

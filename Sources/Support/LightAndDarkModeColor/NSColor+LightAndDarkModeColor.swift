@@ -13,7 +13,7 @@ extension NSColor {
     /// - Parameters:
     ///   - lightMode: The color to use when the `userInterfaceStyle` is `light`  or unknown
     ///   - darkMode: The color to use when the `userInterfaceStyle` is `dark`
-    convenience init(lightMode: NSColor, darkMode: NSColor) {
+    public convenience init(lightMode: NSColor, darkMode: NSColor) {
         self.init(name: nil) { appearance in
             switch appearance.name {
             case .aqua,
@@ -39,7 +39,7 @@ extension NSColor {
     /// - Parameters:
     ///   - lightMode: The color to use when the `userInterfaceStyle` is `light` or unknown
     ///   - darkMode: The color to use when the `userInterfaceStyle` is `dark`
-    convenience init(lightMode: Color, darkMode: Color) {
+    public convenience init(lightMode: Color, darkMode: Color) {
         self.init(
             lightMode: NSColor(lightMode),
             darkMode: NSColor(darkMode)

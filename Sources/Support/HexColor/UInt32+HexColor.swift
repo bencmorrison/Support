@@ -8,7 +8,7 @@ extension UInt32 {
     /// display the value in strings.
     /// - Parameter hexColor: The `HexColor` that needs to be converted
     ///             to an `UInt32`
-    init(_ hexColor: HexColor) {
+    public init(_ hexColor: HexColor) {
         self = ((UInt32(hexColor.red) << 16) | (UInt32(hexColor.green) << 8) | UInt32(hexColor.blue))
     }
 }

@@ -5,7 +5,7 @@ import RegexBuilder
 extension RegexComponent where Self == String  {
     /// Defines the RegEx for a string to be a hexadecimal color.
     /// Expected represenation starting with a `#` followed by 6 hex digits.
-    static var hexColor: Regex<Substring> { Regex.hexColor }
+    public static var hexColor: Regex<Substring> { Regex.hexColor }
 }
 
 private extension Regex where Output == Substring {
