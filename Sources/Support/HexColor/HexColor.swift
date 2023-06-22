@@ -67,7 +67,7 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Parameter stringHexColor: The `UInt64` represenation of the hex color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
     public static func rgbValues(from hexValue: UInt64) throws -> (UInt8, UInt8, UInt8) {
-        assert(hexValue < 0xFFFFFF, "hexValue should be <= 0xFFFFFF")
+        assert(hexValue <= 0xFFFFFF, "hexValue should be <= 0xFFFFFF")
         
         let red = UInt8((0xFF0000 & hexValue) >> 16)
         let green = UInt8((0x00FF00 & hexValue) >> 8)
@@ -79,12 +79,15 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     // MARK: - CustomStringConvertible, CustomDebugStringConvertible
     private var combinedValue: UInt32 { UInt32(self) }
     public var description: String {
-        String(combinedValue, radix: .hexadecimal, prefix: .custom("#"))
+        let string = String(combinedValue, radix: .hexadecimal, prefix: .none)
+        return "#\(string.dropFirst(2))"
     }
     
     public var debugDescription: String {
         return """
-        red: \(String(red, radix: .hexadecimal, showLeadingZeros: false)), green: \(String(green, radix: .hexadecimal, showLeadingZeros: false)), blue: \(String(blue, radix: .hexadecimal, showLeadingZeros: false)))
+        red: \(String(red, radix: .hexadecimal)),
+        green: \(String(green, radix: .hexadecimal)),
+        blue: \(String(blue, radix: .hexadecimal)))
         combined: \(description))
         """
     }
