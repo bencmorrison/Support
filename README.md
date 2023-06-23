@@ -2,7 +2,7 @@
 
 ## What is Support?
 
-In general, it is a series of helper structs, classes, functions, etc that I have found to use in projects from time to time. It is a repository of items that I tend to use and wanted them in one place. 
+In general, it is a series of helper structs, classes, functions, etc that I have found to use in projects from time to time. It is a repository of items that I tend to use and wanted them in one place. Or it is just random things I decided to implement for fun!
 
 ## Can I use them?
 

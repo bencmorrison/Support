@@ -17,7 +17,7 @@ extension Color {
     ///   - yellow: The yellow channel value as a percent 0 to 100
     ///   - key: The key (black) channel value as a percent 0 to 100
     public init(cyan: UInt8, magenta: UInt8, yellow: UInt8, key: UInt8) {
-        let rgb = CMYKColor.toRGB(cyan: cyan, magenta: magenta, yellow: yellow, key: key)
+        let rgb = CMYKColor.rgbValuesFrom(cyan: cyan, magenta: magenta, yellow: yellow, key: key)
         self.init(red: rgb.0, green: rgb.1, blue: rgb.2)
     }
     
@@ -29,7 +29,7 @@ extension Color {
     ///   - yellow: The yellow channel value as a decimal representation of a percentage.
     ///   - key: The key (black) channel value as a decimal representation of a percentage.
     public init(cyan: Double, magenta: Double, yellow: Double, key: Double) {
-        let rgb = CMYKColor.toRGB(cyan: cyan, magenta: magenta, yellow: yellow, key: key)
+        let rgb = CMYKColor.rgbValuesFrom(cyan: cyan, magenta: magenta, yellow: yellow, key: key)
         self.init(red: rgb.0, green: rgb.1, blue: rgb.2)
     }
 }
