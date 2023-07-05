@@ -39,7 +39,7 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Throws: an error when the `hex` parameter is not equal to or below `0xFFFFFF`
     /// - Parameter hexValue: The `UInt32` representation of the hex color.
     public init(hexValue: UInt32) throws {
-        let values = try Self.rgbValues(from: UInt64(hexValue))
+        let values = try Self.rgbValues(from: hexValue)
         red = values.0
         green = values.1
         blue = values.2
@@ -51,23 +51,23 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Parameter stringHexColor: The `String` represenation of the hexadecimal color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
     public static func rgbValues(from stringHexColor: String) throws -> (UInt8, UInt8, UInt8) {
-        assert(stringHexColor.contains(.hexColor), "Expected Format: #RRGGBB")
+        guard stringHexColor.contains(.hexColor) else { throw HexColorError.stringDoesNotMeetExpectedFormat }
         
         let hexColorString = String(stringHexColor.dropFirst())
         let scanner = Scanner(string: hexColorString)
         var hex: UInt64 = 0
         scanner.scanHexInt64(&hex)
         
-        return try rgbValues(from: hex)
+        return try rgbValues(from: UInt32(hex))
     }
     
-    /// Takes a `UInt64` representation of a Hexadecimal color and returns the
+    /// Takes a `UInt32` representation of a Hexadecimal color and returns the
     /// three color channels for that represenation.
     /// - Throws: an error when the `hex` parameter is not equal to or below `0xFFFFFF`
     /// - Parameter stringHexColor: The `UInt64` represenation of the hex color
     /// - Returns: A Tupal of the Red, Green, and Blue channel values, in that order.
-    public static func rgbValues(from hexValue: UInt64) throws -> (UInt8, UInt8, UInt8) {
-        assert(hexValue <= 0xFFFFFF, "hexValue should be <= 0xFFFFFF")
+    public static func rgbValues(from hexValue: UInt32) throws -> (UInt8, UInt8, UInt8) {
+        guard hexValue <= 0xFFFFFF else { throw HexColorError.valueOutOfBounds(hexValue) }
         
         let red = UInt8((0xFF0000 & hexValue) >> 16)
         let green = UInt8((0x00FF00 & hexValue) >> 8)
@@ -90,5 +90,20 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
         blue: \(String(blue, radix: .hexadecimal)))
         combined: \(description))
         """
+    }
+}
+
+
+public enum HexColorError: Error {
+    case stringDoesNotMeetExpectedFormat
+    case valueOutOfBounds(UInt32)
+    
+    public var message: String {
+        switch self {
+        case .stringDoesNotMeetExpectedFormat:
+            return "Expected Format: #RRGGBB"
+        case .valueOutOfBounds(_):
+            return "hexValue should be <= 0xFFFFFF"
+        }
     }
 }

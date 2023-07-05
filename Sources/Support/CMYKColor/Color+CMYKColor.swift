@@ -3,6 +3,14 @@
 import SwiftUI
 
 extension Color {
+    /// Allows the creation of a `Color` form CMYK color string.
+    /// - Note: Expects the format of the string to be `cmyk(cyan%, magenta%, yellow%, key%)`
+    /// - Throws: an error when the format is not correct.
+    /// - Parameter cmykString: The cmyk color string to use.
+    public init(cmykString: String) throws {
+        self = try CMYKColor(cmykString).color
+    }
+    
     /// Creates a color using the CMKY color space
     /// - Parameter cmyk: A `CMYKColor` defining the color
     public init(_ cmyk: CMYKColor) {

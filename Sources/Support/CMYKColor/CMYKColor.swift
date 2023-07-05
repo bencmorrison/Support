@@ -154,7 +154,7 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
     /// - Parameter cmykString: The string containing the cmyk values in the specified format.
     /// - Returns: A tupal containing the CMYK values, in that order.
     public static func cmykValues(from cmykString: String) throws -> (UInt8, UInt8, UInt8, UInt8) {
-        assert(cmykString.contains(.cmykColor), "Expected format: cmyk(c%, m%, y%, k%)")
+        guard cmykString.contains(.cmykColor) else { throw CMYKColorError.stringDoesNotMeetExpectedFormat }
         
         var modifiedString = cmykString.lowercased()
         modifiedString = modifiedString.replacingOccurrences(of: "cmyk(", with: "")
@@ -164,17 +164,17 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
 
         let split = modifiedString.split(separator: ",")
 
-        let ensurePercent: (Substring) -> UInt8 = { value in
+        let ensurePercent: (Substring) throws -> UInt8 = { value in
             let value = Int(value) ?? -1
-            assert(value >= 0 && value <= 100, "CMYK Values should be percents.")
+            guard value >= 0 && value <= 100 else { throw CMYKColorError.valuesNotPercentages }
             return UInt8(value)
         }
 
         return (
-            ensurePercent(split[0]),
-            ensurePercent(split[1]),
-            ensurePercent(split[2]),
-            ensurePercent(split[3])
+            try ensurePercent(split[0]),
+            try ensurePercent(split[1]),
+            try ensurePercent(split[2]),
+            try ensurePercent(split[3])
         )
     }
     
@@ -226,5 +226,19 @@ private extension UInt8 {
     /// Clamps the value to be between 0 and 100, and then divides by 100.0
     var percentDouble: Double {
         Double(self.percent) / 100.0
+    }
+}
+
+public enum CMYKColorError: Error {
+    case stringDoesNotMeetExpectedFormat
+    case valuesNotPercentages
+    
+    var message: String {
+        switch self {
+        case .stringDoesNotMeetExpectedFormat:
+            return "Expected format: cmyk(c%, m%, y%, k%)"
+        case .valuesNotPercentages:
+            return "CMYK Values should be percents."
+        }
     }
 }
