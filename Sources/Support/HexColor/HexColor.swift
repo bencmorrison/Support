@@ -27,8 +27,8 @@ public struct HexColor: CustomStringConvertible, CustomDebugStringConvertible {
     /// - Note: This expects `#` to be pre-pended to the value.
     /// - Throws: an error when the format is not `#RRGGBB`
     /// - Parameter stringHexColor: The `String` representation of the hex color
-    public init(stringHexColor: String) throws {
-        let values = try Self.rgbValues(from: stringHexColor)
+    public init(_ hexString: String) throws {
+        let values = try Self.rgbValues(from: hexString)
         red = values.0
         green = values.1
         blue = values.2

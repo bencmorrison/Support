@@ -13,7 +13,7 @@ final class HexColorTests: XCTestCase {
     
     func testHexStringToHexColor() throws {
         for color in TestColor.allCases {
-            let hexColor = try HexColor(stringHexColor: color.hex)
+            let hexColor = try HexColor(color.hex)
             
             XCTAssertEqual(color.hex, hexColor.description, "Color: \(color.rawValue.uppercased())")
         }

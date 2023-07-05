@@ -9,7 +9,7 @@ extension RegexComponent where Self == String  {
 }
 
 private extension Regex where Output == Substring {
-    static var hexColor = Regex {
+    static let hexColor = Regex {
         Anchor.startOfLine
         "#"
         Repeat(count: 6) { .hexDigit }

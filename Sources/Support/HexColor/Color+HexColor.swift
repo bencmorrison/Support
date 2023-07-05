@@ -9,7 +9,7 @@ extension Color {
     /// - Throws: an error when the format is not `#RRGGBB`
     /// - Parameter hexString: The Hexadecimal Color to use.
     public init(hexString: String) throws {
-        let hex = try HexColor(stringHexColor: hexString)
+        let hex = try HexColor(hexString)
         self = hex.color
     }
     

@@ -27,7 +27,7 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
         self.magenta = magenta.percent
         self.yellow = yellow.percent
         self.key = key.percent
-        self.rgbValues = Self.rgbValuesFrom(cyan: cyan, magenta: magenta, yellow: yellow, key: key)
+        self.rgbValues = Self.rgbValues(fromCyan: cyan, magenta: magenta, yellow: yellow, key: key)
     }
     
     /// Creates a `CMYKColor` frome the provided channels in a decimal representation of a percentage.
@@ -42,8 +42,18 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
         self.magenta = magenta.percentAsUInt8
         self.yellow = yellow.percentAsUInt8
         self.key = key.percentAsUInt8
-        let rgb = Self.rgbValuesFrom(cyan: cyan, magenta: magenta, yellow: yellow, key: key)
+        let rgb = Self.rgbValues(fromCyan: cyan, magenta: magenta, yellow: yellow, key: key)
         self.rgbValues = (rgb.0.percentAsUInt8, rgb.1.percentAsUInt8, rgb.2.percentAsUInt8)
+    }
+    
+    
+    /// Creates a `CMYKColor` from the provided cmyk string that follows the following format:
+    /// `cmyk(cyan%, magenta%, yellow%, key%)`
+    /// - Throws: Throws an error when the format is not `cmyk(cyan%, magenta%, yellow%, key%)`
+    /// - Parameter cmykString: The `String` representation of the cmyk color
+    public init(_ cmykString: String) throws {
+        let values = try Self.cmykValues(from: cmykString)
+        self.init(cyan: values.0, magenta: values.1, yellow: values.2, key: values.3)
     }
     
     /// Converts CMYK values to RGB
@@ -54,7 +64,7 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
     ///   - yellow: The yellow channel value as a percent 0 to 100
     ///   - key: The key (black) channel value as a percent 0 to 100
     /// - Returns: A tupal of the RGB values, in that order. The values will be 0 to 255.
-    public static func rgbValuesFrom(cyan: UInt8, magenta: UInt8, yellow: UInt8, key: UInt8) -> (UInt8, UInt8, UInt8) {
+    public static func rgbValues(fromCyan cyan: UInt8, magenta: UInt8, yellow: UInt8, key: UInt8) -> (UInt8, UInt8, UInt8) {
         let adjustedKey = UInt(100 - key)
         
         let red   = UInt(255 * (100 - UInt(cyan)) * adjustedKey)
@@ -76,9 +86,9 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
     ///   - yellow: The yellow channel value as a decimal representation of a percentage.
     ///   - key: The key (black) channel value as a decimal representation of a percentage.
     /// - Returns: A tupal of the RGB values, in that order. The values are a decimal representation of a percentage.
-    public static func rgbValuesFrom(cyan: Double, magenta: Double, yellow: Double, key: Double) -> (Double, Double, Double) {
-        let values = self.rgbValuesFrom(
-            cyan: cyan.percentAsUInt8,
+    public static func rgbValues(fromCyan cyan: Double, magenta: Double, yellow: Double, key: Double) -> (Double, Double, Double) {
+        let values = self.rgbValues(
+            fromCyan: cyan.percentAsUInt8,
             magenta: magenta.percentAsUInt8,
             yellow: yellow.percentAsUInt8,
             key: key.percentAsUInt8
@@ -94,7 +104,7 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
     ///   - green: The green channel represenation
     ///   - blue: The blue channel represenation
     /// - Returns: A tupal of CMYK values, in that order. Values are represented as a percentage (0 - 100)
-    public static func cmykValuesFrom(red: UInt8, green: UInt8, blue: UInt8) -> (UInt8, UInt8, UInt8, UInt8) {
+    public static func cmykValues(fromRed red: UInt8, green: UInt8, blue: UInt8) -> (UInt8, UInt8, UInt8, UInt8) {
         let redPrime = UInt(floor(Double(UInt(red) * 100) / 255.0))
         let greenPrime = UInt(floor(Double(UInt(green) * 100) / 255.0))
         let bluePrime = UInt(floor(Double(UInt(blue) * 100) / 255.0))
@@ -123,9 +133,9 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
     ///   - green: The green channel represenation as a decimal representation of a percentage.
     ///   - blue: The blue channel represenation as a decimal representation of a percentage.
     /// - Returns: A tupal of CMYK values, in that order. Values are represented as a decimal representation of a percentage.
-    public static func cmykValuesFrom(red: Double, green: Double, blue: Double) -> (Double, Double, Double, Double) {
-        let values = cmykValuesFrom(
-            red: red.percentAsUInt8,
+    public static func cmykValues(fromRed red: Double, green: Double, blue: Double) -> (Double, Double, Double, Double) {
+        let values = cmykValues(
+            fromRed: red.percentAsUInt8,
             green: green.percentAsUInt8,
             blue: blue.percentAsUInt8
         )
@@ -135,6 +145,36 @@ public struct CMYKColor: Equatable, CustomStringConvertible, CustomDebugStringCo
             values.1.percentDouble,
             values.2.percentDouble,
             values.3.percentDouble
+        )
+    }
+    
+    
+    /// Allows the values for a CMYK to be parsed from string notation.
+    /// Example: `cmyk(100%, 75%, 0%, 88%)`
+    /// - Parameter cmykString: The string containing the cmyk values in the specified format.
+    /// - Returns: A tupal containing the CMYK values, in that order.
+    public static func cmykValues(from cmykString: String) throws -> (UInt8, UInt8, UInt8, UInt8) {
+        assert(cmykString.contains(.cmykColor), "Expected format: cmyk(c%, m%, y%, k%)")
+        
+        var modifiedString = cmykString.lowercased()
+        modifiedString = modifiedString.replacingOccurrences(of: "cmyk(", with: "")
+        modifiedString = modifiedString.replacingOccurrences(of: ")", with: "")
+        modifiedString = modifiedString.replacingOccurrences(of: " ", with: "")
+        modifiedString = modifiedString.replacingOccurrences(of: "%", with: "")
+
+        let split = modifiedString.split(separator: ",")
+
+        let ensurePercent: (Substring) -> UInt8 = { value in
+            let value = Int(value) ?? -1
+            assert(value >= 0 && value <= 100, "CMYK Values should be percents.")
+            return UInt8(value)
+        }
+
+        return (
+            ensurePercent(split[0]),
+            ensurePercent(split[1]),
+            ensurePercent(split[2]),
+            ensurePercent(split[3])
         )
     }
     
